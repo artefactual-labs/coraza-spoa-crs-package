@@ -1,0 +1,12 @@
+/var/log/coraza-spoa/*.log {
+    daily
+    rotate 7
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    postrotate
+        /usr/bin/systemctl restart coraza-spoa
+    endscript
+}

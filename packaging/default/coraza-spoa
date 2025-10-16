@@ -1,0 +1,5 @@
+# Runtime options for coraza-spoa; override values as needed and
+# restart the service. Example:
+#   CORAZA_SPOA_OPTS="-config /etc/coraza-spoa/config.yaml"
+
+CORAZA_SPOA_OPTS="-config /etc/coraza-spoa/config.yaml"

@@ -1,0 +1,24 @@
+# Default configuration for coraza-spoa when installed via the coraza-spoa-crs package.
+bind: 127.0.0.1:9000
+
+# Logging configuration.
+log_level: info
+log_file: /dev/stdout
+log_format: console
+
+# The default application ensures requests are always handled even if HAProxy does
+# not provide a specific application identifier.
+default_application: default_app
+
+applications:
+  - name: default_app
+    directives: |
+      Include /etc/coraza-spoa/coraza.conf
+      Include /etc/coraza-spoa/crs-setup.conf
+      Include /etc/coraza-spoa/rules/*.conf
+      SecRuleEngine On
+    response_check: false
+    transaction_ttl_ms: 60000
+    log_level: info
+    log_file: /var/log/coraza-spoa/default_app.log
+    log_format: console

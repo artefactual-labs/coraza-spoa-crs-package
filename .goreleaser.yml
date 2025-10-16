@@ -1,0 +1,95 @@
+version: 2
+project_name: coraza-spoa-crs
+
+release:
+  header: |
+    ## Upstream components
+    - [Coraza SPOA {{ .Env.CORAZA_SPOA_VERSION }}](https://github.com/corazawaf/coraza-spoa/releases/tag/{{ .Env.CORAZA_SPOA_VERSION }})
+    - [OWASP Core Rule Set {{ .Env.CRS_VERSION }}](https://github.com/coreruleset/coreruleset/releases/tag/{{ .Env.CRS_REF }})
+
+before:
+  hooks:
+    - ./scripts/prepare-rootfs.sh
+
+builds:
+  - id: placeholder
+    main: ./cmd/dummy
+    binary: placeholder
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s
+      - -w
+
+archives: []
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  use: git
+  abbrev: 8
+
+nfpms:
+  - id: coraza-spoa-crs
+    package_name: coraza-spoa-crs
+    formats: [deb, rpm]
+    vendor: Artefactual Systems Inc.
+    homepage: https://github.com/artefactual-labs/coraza-spoa-crs-package
+    maintainer: Artefactual Systems Inc. <info@artefactual.com>
+    description: Coraza SPOA daemon packaged with the OWASP Core Rule Set.
+    license: AGPL-3.0-or-later
+    file_name_template: '{{ .ProjectName }}_{{ .Version }}-{{ .Env.PACKAGE_RELEASE }}_{{ .Arch }}'
+    release: '{{ .Env.PACKAGE_RELEASE }}'
+    dependencies:
+      - haproxy
+    contents:
+      - src: build/prebuilt/{{ .Os }}_{{ .Arch }}/coraza-spoa
+        dst: /usr/bin/coraza-spoa
+        type: file
+        file_info:
+          mode: 0755
+          owner: root
+          group: root
+      - src: build/rootfs/etc/coraza-spoa/config.yaml
+        dst: /etc/coraza-spoa/config.yaml
+        type: config|noreplace
+      - src: build/rootfs/etc/coraza-spoa/coraza.conf
+        dst: /etc/coraza-spoa/coraza.conf
+        type: config|noreplace
+      - src: build/rootfs/etc/coraza-spoa/crs-setup.conf
+        dst: /etc/coraza-spoa/crs-setup.conf
+        type: config|noreplace
+      - src: build/rootfs/etc/coraza-spoa/rules
+        dst: /etc/coraza-spoa/rules
+        type: tree
+      - src: build/rootfs/etc/default/coraza-spoa
+        dst: /etc/default/coraza-spoa
+        type: config|noreplace
+      - src: build/rootfs/etc/haproxy/coraza.cfg
+        dst: /etc/haproxy/coraza.cfg
+        type: config|noreplace
+      - src: build/rootfs/etc/systemd/system/coraza-spoa.service
+        dst: /etc/systemd/system/coraza-spoa.service
+        type: config|noreplace
+      - src: build/rootfs/etc/logrotate.d/coraza-spoa
+        dst: /etc/logrotate.d/coraza-spoa
+        type: config|noreplace
+      - src: build/rootfs/var/log/coraza-spoa
+        dst: /var/log/coraza-spoa
+        type: dir
+        file_info:
+          mode: 0755
+          owner: coraza-spoa
+          group: coraza-spoa
+    scripts:
+      postinstall: packaging/nfpm/postinstall.sh
+      preremove: packaging/nfpm/preremove.sh
+      postremove: packaging/nfpm/postremove.sh
