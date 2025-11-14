@@ -6,7 +6,7 @@ if [ $# -gt 0 ]; then
   OUT_PATH="$1"
   mkdir -p "$(dirname "${OUT_PATH}")"
 else
-  OUT_PATH="$(mktemp -p "${ROOT_DIR}" ".goreleaser.XXXXXX.yml")"
+  OUT_PATH="$(mktemp "${TMPDIR:-/tmp}/goreleaser.XXXXXX.yml")"
 fi
 
 : "${PACKAGE_RELEASE:=1}"
