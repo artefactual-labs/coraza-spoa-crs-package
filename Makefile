@@ -7,6 +7,7 @@ build:
 
 snapshot:
 	CONFIG=$$(./scripts/render-goreleaser-config.sh); \
+	trap 'rm -f "$$CONFIG"' EXIT; \
 	goreleaser release --snapshot --skip=publish --clean --config "$$CONFIG"
 
 clean:
