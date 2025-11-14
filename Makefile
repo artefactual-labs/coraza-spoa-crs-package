@@ -6,7 +6,8 @@ build:
 	./scripts/prepare-rootfs.sh
 
 snapshot:
-	goreleaser release --snapshot --skip=publish --clean
+	CONFIG=$$(./scripts/render-goreleaser-config.sh); \
+	goreleaser release --snapshot --skip=publish --clean --config "$$CONFIG"
 
 clean:
 	rm -rf build dist
