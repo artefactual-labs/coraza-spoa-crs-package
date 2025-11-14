@@ -4,7 +4,8 @@ Description=Coraza WAF SPOA Daemon
 Documentation=https://www.coraza.io
 
 [Service]
-ExecStart=/usr/bin/coraza-spoa -config=/etc/coraza-spoa/config.yaml
+EnvironmentFile=-/etc/default/coraza-spoa
+ExecStart=/usr/bin/coraza-spoa $CORAZA_SPOA_OPTS
 WorkingDirectory=/
 Restart=always
 Type=exec

@@ -2,4 +2,4 @@
 # restart the service. Example:
 #   CORAZA_SPOA_OPTS="-config /etc/coraza-spoa/config.yaml"
 
-CORAZA_SPOA_OPTS="-config /etc/coraza-spoa/config.yaml"
+CORAZA_SPOA_OPTS="-config /etc/coraza-spoa/config.yaml -metrics-addr 127.0.0.1:9001"
